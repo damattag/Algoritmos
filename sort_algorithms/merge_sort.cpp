@@ -2,67 +2,81 @@
 
 using namespace std;
 
-void print_array(int *array, int n) {
-  for (int i = 0; i < n; i++) {
-    cout << array[i] << " ";
-  }
-  cout << endl;
-}
-
-void merge(int *array, int left, int mid, int right) {
-  int i = left;
-  int j = mid + 1;
-  int k = left;
-
-  int n1 = mid - left + 1;
-  int n2 = right - mid;
+int merge(int array[], int low, int mid, int high) {
+  int n1 = mid - low + 1;
+  int n2 = high - mid;
 
   int L[n1], R[n2];
 
   for (int i = 0; i < n1; i++) {
-    L[i] = array[i + left];
+    L[i] = array[i + low];
   }
 
-  for (int i = 0; i < n2; i++) {
-    R[i] = array[i + mid + 1];
+  for (int j = 0; j < n2; j++) {
+    R[j] = array[j + mid + 1];
   }
 
-  i = 0;
-  j = 0;
-
-  for (int k = left; k <= right; k++) {
+  int i = 0, j = 0, k = low;
+  
+  while (i < n1 && j < n2) {
     if (L[i] <= R[j]) {
       array[k] = L[i];
       i++;
+      k++;
     } else {
       array[k] = R[j];
       j++;
+      k++;
     }
-  };
-};
+  }
 
-void merge_sort(int *array, int left, int right) {
-  if (left < right) {
-    int mid = (left + right) / 2;
+  while (i < n1) {
+    array[k] = L[i];
+    i++;
+    k++;
+  }
 
-    merge_sort(array, left, mid);
-    merge_sort(array, mid + 1, right);
+  while (j < n2) {
+    array[k] = R[j];
+    j++;
+    k++;
+  }
 
-    merge(array, left, mid, right);
+  return 0;
+}
 
+void merge_sort(int array[], int low, int high, int* prints) {
+  if (low < high) {
+    int mid = (low + high) / 2;
+
+    merge_sort(array, low, mid, prints);
+    merge_sort(array, mid + 1, high, prints);
+
+    merge(array, low, mid, high);
   }
 }
 
 int main() {
-  int array[] = {1, 9, 5, 7, 2, 11, 10, 15, 1, 19};
-  int n = sizeof(array) / sizeof(array[0]);
+  int size;
+  cin >> size;
 
-  merge_sort(array, 0, n - 1);
+  int array[size];
 
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < size; i++) {
+    cin >> array[i];
+  }
+
+  int prints = 1;
+
+
+  merge_sort(array, 0, size - 1, &prints);
+
+  cout << "After Sorting the elements are : ";
+
+  for (int i = 0; i < size; i++) {
     cout << array[i] << " ";
   }
   cout << endl;
-
+  
   return 0;
 }
